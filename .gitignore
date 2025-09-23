@@ -1,0 +1,9 @@
+function.zip
+.venv
+package
+.idea
+infra/.terraform
+infra/.terraform.lock.hcl
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+function.zip

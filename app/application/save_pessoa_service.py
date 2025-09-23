@@ -1,3 +1,4 @@
+import concurrent.futures
 import uuid
 
 from domain.model.pessoa import Pessoa
@@ -15,7 +16,10 @@ class SavePessoaService(ISavePessoaUseCase):
         self.pessoa_dynamo_repository = pessoa_dynamo_repository
 
     def execute(self, nome: str, cep: str, numero: str) -> Pessoa:
-        endereco = self.api_via_cep_client.find_endereco_by_cep(cep)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            endereco_future = executor.submit(self.api_via_cep_client.find_endereco_by_cep, cep)
+
+        endereco = endereco_future.result()
 
         id = str(uuid.uuid4())
         logradouro = endereco["logradouro"]
